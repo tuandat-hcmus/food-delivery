@@ -2,6 +2,7 @@ package restaurantstorage
 
 import (
 	"context"
+	"rest/common"
 	"rest/modules/restaurant/restaurantmodel"
 )
 
@@ -17,7 +18,7 @@ func (s *sqlStore) SoftDeleteData(
 		Updates(map[string]interface{}{
 			"status" : 0,
 		}).Error; err != nil {
-			return err
+			return common.ErrDB(err)
 		}
 		return nil
 }
