@@ -6,6 +6,8 @@ import (
 	"strings"
 )
 
+const EntityName = "restaurant"
+
 type Restaurant struct {
 	common.SQLModel `json:",inline"` // embeded struct
 	Name string `json:"name" gorm:"column:name;"`
