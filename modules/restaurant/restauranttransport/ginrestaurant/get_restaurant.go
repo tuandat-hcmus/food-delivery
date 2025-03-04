@@ -16,18 +16,14 @@ func GetRestaurant(ctx component.AppContext) gin.HandlerFunc {
 		idStr := c.Param("id")
 		id, err := strconv.Atoi(idStr)
 		if err != nil {
-			c.JSON(401, gin.H {
-				"error": err.Error(),
-			})
+			c.JSON(http.StatusBadRequest, common.ErrInvalidRequest(err))
 			return
 		}
 		store := restaurantstorage.NewSqlStore(ctx.GetMainDBConnection())
 		biz := restaurantbiz.NewGetRestaurantBiz(store)
 		result, err := biz.GetRestaurant(c.Request.Context(), id)
 		if err != nil {
-			c.JSON(401, gin.H {
-				"error": err.Error(),
-			})
+			c.JSON(http.StatusBadRequest, err)
 			return
 		}
 		c.JSON(http.StatusOK, common.SimpleSuccessResponse(&result))

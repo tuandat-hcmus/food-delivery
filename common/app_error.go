@@ -9,7 +9,7 @@ import (
 
 type AppError struct {
 	StatusCode int    `json:"status_code"`
-	RootErr    error  `json:"_"`
+	RootErr    error  `json:"-"`
 	Message    string `json:"message"`
 	Log        string `json:"log"`
 	Key        string `json:"error_key"`
@@ -104,6 +104,14 @@ func ErrEntityExisted(entity string, err error) *AppError {
 		err,
 		fmt.Sprintf("%s already exists", strings.ToLower(entity)),
 		fmt.Sprintf("Err%sAlreadyExists", entity),
+	)
+}
+
+func ErrEntityDeleted(entity string, err error) *AppError {
+	return NewCustomError(
+		err,
+		fmt.Sprintf("%s deleted", strings.ToLower(entity)),
+		fmt.Sprintf("Err%sDeleted", entity),
 	)
 }
 
