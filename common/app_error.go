@@ -2,7 +2,9 @@ package common
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
+	"strings"
 )
 
 type AppError struct {
@@ -63,4 +65,52 @@ func (e *AppError) Error() string {
 // db errors
 func ErrDB(err error) *AppError {
 	return NewErrorResponse(err, "something went wrong with database", err.Error(), "DB_ERROR")
+}
+
+func ErrCannotGetEntity(entity string, err error) *AppError {
+	return NewCustomError(
+		err,
+		fmt.Sprintf("Cannot get %s", strings.ToLower(entity)),
+		fmt.Sprintf("ErrCannotGet%s", entity),
+	)
+}
+
+func ErrCannotListtEntity(entity string, err error) *AppError {
+	return NewCustomError(
+		err,
+		fmt.Sprintf("Cannot list %s", strings.ToLower(entity)),
+		fmt.Sprintf("ErrCannotListt%s", entity),
+	)
+}
+
+func ErrCannotDeletetEntity(entity string, err error) *AppError {
+	return NewCustomError(
+		err,
+		fmt.Sprintf("Cannot delete %s", strings.ToLower(entity)),
+		fmt.Sprintf("ErrCannotDelete%s", entity),
+	)
+}
+
+func ErrCannotCreateEntity(entity string, err error) *AppError {
+	return NewCustomError(
+		err,
+		fmt.Sprintf("Cannot create %s", strings.ToLower(entity)),
+		fmt.Sprintf("ErrCannotCreate%s", entity),
+	)
+}
+
+func ErrEntityExisted(entity string, err error) *AppError {
+	return NewCustomError(
+		err,
+		fmt.Sprintf("%s already exists", strings.ToLower(entity)),
+		fmt.Sprintf("Err%sAlreadyExists", entity),
+	)
+}
+
+func ErrInvalidRequest(err error) *AppError {
+	return NewErrorResponse(err, "invalid request", err.Error(), "ErrInvalidRequest")
+}
+
+func ErrInternal(err error) *AppError {
+	return NewErrorResponse(err, "internal error", err.Error(), "ErrInternal")
 }
