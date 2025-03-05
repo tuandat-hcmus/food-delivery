@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-const EntityName = "restaurant"
+const EntityName = "Restaurant"
 
 type Restaurant struct {
 	common.SQLModel `json:",inline"` // embeded struct

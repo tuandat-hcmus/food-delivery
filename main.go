@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"rest/component"
+	"rest/middleware"
 	"rest/modules/restaurant/restauranttransport/ginrestaurant"
 
 	"github.com/gin-gonic/gin"
@@ -27,14 +28,15 @@ func main() {
 }
 
 func runService(db *gorm.DB) error {
+	appCtx := component.NewAppContext(db)
 	r := gin.Default()
+	r.Use(middleware.Recover(appCtx))
 
 	r.GET("/ping", func (c *gin.Context)  {
 		c.JSON(http.StatusOK, gin.H {
 			"message" : "pong",
 		})
 	})
-	appCtx := component.NewAppContext(db)
 	restaurants := r.Group("/restaurants") 
 	{
 		restaurants.POST("", ginrestaurant.CreateRestaurant(appCtx))

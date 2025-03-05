@@ -120,5 +120,5 @@ func ErrInvalidRequest(err error) *AppError {
 }
 
 func ErrInternal(err error) *AppError {
-	return NewErrorResponse(err, "internal error", err.Error(), "ErrInternal")
+	return NewFullErrorResponse(http.StatusInternalServerError, err, "internal error", err.Error(), "ErrInternal")
 }
