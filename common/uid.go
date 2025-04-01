@@ -124,7 +124,7 @@ func (uid *UID) Scan(value interface{}) error {
 		}
 		i = uint32(a)
 	default:
-		return errors.New("Invalid Scan Source")
+		return errors.New("invalid scan source")
 	}
 	*uid = NewUID(i, 0, 0)
 	return nil

@@ -6,29 +6,21 @@ import (
 	"rest/component"
 	"rest/modules/restaurant/restaurantbiz"
 	"rest/modules/restaurant/restaurantstorage"
-	"strconv"
-
 	"github.com/gin-gonic/gin"
 )
 
 func DeleteRestaurant(ctx component.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		id, err := strconv.Atoi(c.Param("id"))
+		uid, err := common.FromBase58(c.Param("id"))
 		if err != nil {
-			c.JSON(401, gin.H {
-				"error" : err.Error(),
-			})
-			return
+			panic(common.ErrInvalidRequest(err))
 		}
 
 		store := restaurantstorage.NewSqlStore(ctx.GetMainDBConnection())
 		biz := restaurantbiz.NewDeleteRestaurantBiz(store)
 		
-		if err := biz.DeleteRestaurant(c.Request.Context(), id); err != nil {
-			c.JSON(401, gin.H {
-				"error" : err.Error(), 
-			})
-			return
+		if err := biz.DeleteRestaurant(c.Request.Context(), int(uid.GetLocalID())); err != nil {
+			panic(err)
 		}
 		c.JSON(http.StatusOK, common.SimpleSuccessResponse(true))
 	}

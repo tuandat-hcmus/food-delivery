@@ -33,6 +33,7 @@ func (RestaurantUpdate) TableName() string {
 
 // Tao struct moi cho du lieu duoc create, do thuc te du lieu create moi chi gom mot so fields
 type RestaurantCreate struct {
+	common.SQLModel `json:",inline"` 
 	Name  string         `json:"name" gorm:"column:name;"`
 	Addr  string         `json:"address" gorm:"column:addr;"`
 	Logo  *common.Image  `json:"logo" gorm:"column:logo;"`
@@ -49,4 +50,12 @@ func (res *RestaurantCreate) Validate() error {
 		return errors.New("restaurant name cannot be blank")
 	}
 	return nil
+}
+
+func (data *Restaurant) Mask(isAdminOrOwner bool) {
+	data.GenUID(common.DbTypeRestasurant)
+}
+
+func (createdData *RestaurantCreate) Mask(isAdminOrOwner bool) {
+	createdData.GenUID(common.DbTypeRestasurant)
 }
