@@ -14,6 +14,7 @@ type Restaurant struct {
 	Addr            string           `json:"address" gorm:"column:addr;"`
 	Logo            *common.Image    `json:"logo" gorm:"column:logo;"`
 	Cover           *common.Images   `json:"cover" gorm:"column:cover;"`
+	LikeCount       int              `json:"like_count" gorm:"-"`
 }
 
 func (Restaurant) TableName() string {
@@ -33,11 +34,11 @@ func (RestaurantUpdate) TableName() string {
 
 // Tao struct moi cho du lieu duoc create, do thuc te du lieu create moi chi gom mot so fields
 type RestaurantCreate struct {
-	common.SQLModel `json:",inline"` 
-	Name  string         `json:"name" gorm:"column:name;"`
-	Addr  string         `json:"address" gorm:"column:addr;"`
-	Logo  *common.Image  `json:"logo" gorm:"column:logo;"`
-	Cover *common.Images `json:"cover" gorm:"column:cover;"`
+	common.SQLModel `json:",inline"`
+	Name            string         `json:"name" gorm:"column:name;"`
+	Addr            string         `json:"address" gorm:"column:addr;"`
+	Logo            *common.Image  `json:"logo" gorm:"column:logo;"`
+	Cover           *common.Images `json:"cover" gorm:"column:cover;"`
 }
 
 func (RestaurantCreate) TableName() string {

@@ -7,6 +7,7 @@ import (
 	"rest/modules/restaurant/restaurantbiz"
 	"rest/modules/restaurant/restaurantmodel"
 	"rest/modules/restaurant/restaurantstorage"
+	restaurantlikestorage "rest/modules/restaurant_like/storage"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,7 +24,8 @@ func ListRestaurant(ctx component.AppContext) gin.HandlerFunc {
 		}
 		paging.Fulfill()
 		store := restaurantstorage.NewSqlStore(ctx.GetMainDBConnection())
-		biz := restaurantbiz.NewListRestaurantBiz(store)
+		likeStore := restaurantlikestorage.NewSqlStore(ctx.GetMainDBConnection())
+		biz := restaurantbiz.NewListRestaurantBiz(store, likeStore)
 		result, err := biz.ListRestaurant(c.Request.Context(), &filter, &paging)
 		if err != nil {
 			panic(err)
