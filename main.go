@@ -7,6 +7,7 @@ import (
 	"rest/component"
 	"rest/middleware"
 	"rest/modules/restaurant/restauranttransport/ginrestaurant"
+	"rest/modules/user/usertransport/ginuser"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -37,6 +38,7 @@ func runService(db *gorm.DB) error {
 			"message" : "pong",
 		})
 	})
+	r.POST("/register", ginuser.Register(appCtx))
 	restaurants := r.Group("/restaurants") 
 	{
 		restaurants.POST("", ginrestaurant.CreateRestaurant(appCtx))
