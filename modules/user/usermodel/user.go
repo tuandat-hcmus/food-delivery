@@ -1,6 +1,10 @@
 package usermodel
 
-import "rest/common"
+import (
+	"errors"
+	"rest/common"
+	"rest/component/tokenprovider"
+)
 
 const EntityName = "User"
 
@@ -14,6 +18,18 @@ type User struct {
 	Phone           string        `json:"phone" gorm:"column:phone;"`
 	Role            string        `json:"role" gorm:"column:role;"`
 	Avatar          *common.Image `json:"avatar,omitempty" gorm:"column:avatar;type:json"`
+}
+
+type Account struct {
+	AccessToken *tokenprovider.Token `json:"access_token"`
+	RefreshToken *tokenprovider.Token `json:"refresh_token"`
+}
+
+func NewAccount(at, rt *tokenprovider.Token) *Account {
+	return &Account{
+		AccessToken: at,
+		RefreshToken: rt,
+	}
 }
 
 func (User) TableName() string {
@@ -48,3 +64,17 @@ func (UserLogin) TableName() string {
 func (data *UserCreate) Mask(isAdmin bool) {
 	data.GenUID(common.DbTypeUser)
 }
+
+var (
+	ErrUsernameOrPasswordInvalid = common.NewCustomError(
+		errors.New("username or password invalid"), 
+		"username or password invalid", 
+		"ErrUsernameOrPwdInvalid", 
+	)
+
+	ErrEmailExisted = common.NewCustomError(
+		errors.New("email has already existed"), 
+		"email has already existed", 
+		"ErrEmailExisted", 
+	)
+)
