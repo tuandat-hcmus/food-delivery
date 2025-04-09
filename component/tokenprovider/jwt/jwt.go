@@ -22,14 +22,14 @@ type myClaims struct {
 
 func (j *jwtProvider) Generate(data tokenprovider.TokenPayLoad, expiry int) (*tokenprovider.Token, error) {
 	// generate jwt
-	t := jwt.NewWithClaims(jwt.SigningMethodES256, myClaims{
+	t := jwt.NewWithClaims(jwt.SigningMethodHS256, myClaims{
 		data,
 		jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().UTC().Add(time.Second * time.Duration(expiry))),
 			IssuedAt: jwt.NewNumericDate(time.Now().UTC()),
 		},
 	})
-	myToken, err := t.SignedString(j.secret)
+	myToken, err := t.SignedString([]byte(j.secret))
 	if err != nil {
 		return nil, err
 	}
@@ -39,4 +39,8 @@ func (j *jwtProvider) Generate(data tokenprovider.TokenPayLoad, expiry int) (*to
 		Expiry: expiry,
 		Created: time.Now().UTC(),
 	}, nil
+}
+
+func (j *jwtProvider) Validate(token string) (*tokenprovider.TokenPayLoad, error) {
+	return nil, nil
 }

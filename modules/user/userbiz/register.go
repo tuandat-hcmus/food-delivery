@@ -30,8 +30,8 @@ func NewRegisterBiz(registerStorage RegisterStorage, hasher Hasher) *registerBiz
 func (biz *registerBiz) Register(ctx context.Context, data *usermodel.UserCreate) error {
 	user, err := biz.registerStorage.FindUser(ctx, map[string]interface{}{"email": data.Email})
 	if err == common.RecordNotFound {
-		salt := common.GenSalt(50)
-		data.Password = biz.hasher.Hash(data.Password + salt)
+		data.Salt = common.GenSalt(50)
+		data.Password = biz.hasher.Hash(data.Password + data.Salt)
 		data.Role = "user"
 		data.Status = 1
 

@@ -8,6 +8,7 @@ import (
 	"rest/middleware"
 	"rest/modules/restaurant/restauranttransport/ginrestaurant"
 	"rest/modules/user/usertransport/ginuser"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -18,18 +19,21 @@ import (
 func main() {
 	godotenv.Load()
 	dsn := os.Getenv("DBConnectionStr")
+	secretKey := os.Getenv("SYSTEM_SECRET")
+	atExp, _ := strconv.Atoi(os.Getenv("AT_EXP"))
+	rtExp, _ := strconv.Atoi(os.Getenv("RT_EXP"))
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalln(err)
 	}
 	
-	if err := runService(db); err != nil {
+	if err := runService(db, secretKey, atExp, rtExp); err != nil {
 		log.Fatalln(err)
 	}
 }
 
-func runService(db *gorm.DB) error {
-	appCtx := component.NewAppContext(db)
+func runService(db *gorm.DB, secretKey string, atExp, rtExp int) error {
+	appCtx := component.NewAppContext(db, secretKey, atExp, rtExp)
 	r := gin.Default()
 	r.Use(middleware.Recover(appCtx))
 
@@ -39,6 +43,7 @@ func runService(db *gorm.DB) error {
 		})
 	})
 	r.POST("/register", ginuser.Register(appCtx))
+	r.POST("/login", ginuser.Login(appCtx))
 	restaurants := r.Group("/restaurants") 
 	{
 		restaurants.POST("", ginrestaurant.CreateRestaurant(appCtx))
