@@ -122,3 +122,11 @@ func ErrInvalidRequest(err error) *AppError {
 func ErrInternal(err error) *AppError {
 	return NewFullErrorResponse(http.StatusInternalServerError, err, "internal error", err.Error(), "ErrInternal")
 }
+
+func ErrNoPermission(err error) *AppError {
+	return NewCustomError(
+		err, 
+		"you have no permission", 
+		"ErrNoPermission", 
+	)
+}
