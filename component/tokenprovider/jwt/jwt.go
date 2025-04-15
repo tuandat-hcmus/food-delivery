@@ -41,6 +41,22 @@ func (j *jwtProvider) Generate(data tokenprovider.TokenPayLoad, expiry int) (*to
 	}, nil
 }
 
+// validate + parse payload
 func (j *jwtProvider) Validate(token string) (*tokenprovider.TokenPayLoad, error) {
-	return nil, nil
+	res, err := jwt.ParseWithClaims(token, myClaims{}, func(t *jwt.Token) (interface{}, error) {
+		return []byte(j.secret), nil
+	})
+
+	if err != nil {
+		return nil, tokenprovider.ErrInvalidToken
+	}
+
+	if !res.Valid {
+		return nil, tokenprovider.ErrInvalidToken
+	}
+	claims, ok := res.Claims.(*myClaims)
+	if !ok {
+		return nil, tokenprovider.ErrInvalidToken
+	}
+	return &claims.PayLoad, nil
 }

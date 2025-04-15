@@ -6,3 +6,5 @@ const (
 	DbTypeCategory = 3
 	DbTypeUser = 4
 )
+
+const CurrentUser = "user"
