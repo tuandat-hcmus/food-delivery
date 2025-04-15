@@ -20,20 +20,36 @@ type User struct {
 	Avatar          *common.Image `json:"avatar,omitempty" gorm:"column:avatar;type:json"`
 }
 
+func (u *User) GetUserId() int {
+	return u.Id
+}
+
+func (u *User) GetEmail() string {
+	return u.Email
+}
+
+func (u *User) GetRole() string {
+	return u.Role
+}
+
 type Account struct {
-	AccessToken *tokenprovider.Token `json:"access_token"`
+	AccessToken  *tokenprovider.Token `json:"access_token"`
 	RefreshToken *tokenprovider.Token `json:"refresh_token"`
 }
 
 func NewAccount(at, rt *tokenprovider.Token) *Account {
 	return &Account{
-		AccessToken: at,
+		AccessToken:  at,
 		RefreshToken: rt,
 	}
 }
 
 func (User) TableName() string {
 	return "users"
+}
+
+func (u *User) Mask(isAdmin bool) { 
+	u.GenUID(common.DbTypeUser)
 }
 
 type UserCreate struct {
@@ -53,7 +69,7 @@ func (UserCreate) TableName() string {
 }
 
 type UserLogin struct {
-	Email string `json:"email" form:"email" gorm:"column:email;"`
+	Email    string `json:"email" form:"email" gorm:"column:email;"`
 	Password string `json:"password" for:"password" gorm:"column:password;"`
 }
 
@@ -67,14 +83,14 @@ func (data *UserCreate) Mask(isAdmin bool) {
 
 var (
 	ErrUsernameOrPasswordInvalid = common.NewCustomError(
-		errors.New("username or password invalid"), 
-		"username or password invalid", 
-		"ErrUsernameOrPwdInvalid", 
+		errors.New("username or password invalid"),
+		"username or password invalid",
+		"ErrUsernameOrPwdInvalid",
 	)
 
 	ErrEmailExisted = common.NewCustomError(
-		errors.New("email has already existed"), 
-		"email has already existed", 
-		"ErrEmailExisted", 
+		errors.New("email has already existed"),
+		"email has already existed",
+		"ErrEmailExisted",
 	)
 )

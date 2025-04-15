@@ -1,6 +1,7 @@
 package jwt
 
 import (
+	"fmt"
 	"rest/component/tokenprovider"
 	"time"
 
@@ -43,9 +44,11 @@ func (j *jwtProvider) Generate(data tokenprovider.TokenPayLoad, expiry int) (*to
 
 // validate + parse payload
 func (j *jwtProvider) Validate(token string) (*tokenprovider.TokenPayLoad, error) {
-	res, err := jwt.ParseWithClaims(token, myClaims{}, func(t *jwt.Token) (interface{}, error) {
+	res, err := jwt.ParseWithClaims(token, &myClaims{}, func(t *jwt.Token) (interface{}, error) {
 		return []byte(j.secret), nil
 	})
+
+	fmt.Print(err)
 
 	if err != nil {
 		return nil, tokenprovider.ErrInvalidToken

@@ -44,6 +44,7 @@ func runService(db *gorm.DB, secretKey string, atExp, rtExp int) error {
 	})
 	r.POST("/register", ginuser.Register(appCtx))
 	r.POST("/login", ginuser.Login(appCtx))
+	r.GET("/profile", middleware.RequireAuth(appCtx), ginuser.GetProfile(appCtx))
 	restaurants := r.Group("/restaurants") 
 	{
 		restaurants.POST("", ginrestaurant.CreateRestaurant(appCtx))
