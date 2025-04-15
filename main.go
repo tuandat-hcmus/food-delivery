@@ -42,10 +42,14 @@ func runService(db *gorm.DB, secretKey string, atExp, rtExp int) error {
 			"message" : "pong",
 		})
 	})
-	r.POST("/register", ginuser.Register(appCtx))
-	r.POST("/login", ginuser.Login(appCtx))
-	r.GET("/profile", middleware.RequireAuth(appCtx), ginuser.GetProfile(appCtx))
-	restaurants := r.Group("/restaurants", middleware.RequireAuth(appCtx)) 
+
+	//versioning
+	v1 := r.Group("/v1")
+
+	v1.POST("/register", ginuser.Register(appCtx))
+	v1.POST("/login", ginuser.Login(appCtx))
+	v1.GET("/profile", middleware.RequireAuth(appCtx), ginuser.GetProfile(appCtx))
+	restaurants := v1.Group("/restaurants", middleware.RequireAuth(appCtx)) 
 	{
 		restaurants.POST("", ginrestaurant.CreateRestaurant(appCtx))
 		restaurants.GET("", ginrestaurant.ListRestaurant(appCtx))
